@@ -44,9 +44,10 @@ export function ResetPasswordForm() {
   };
 
   return (
-    <AuthShell>
+    <AuthShell maxWidth="max-w-[440px]">
       <AuthCard
         title="Set a new password"
+        subtitle="Choose a strong password to secure your WPA account."
         footer={
           <Link href={appConfig.routes.login} className="font-medium text-brand hover:underline">
             Back to sign in
@@ -55,9 +56,14 @@ export function ResetPasswordForm() {
       >
         {!token && <AlertMessage variant="error">This reset link is invalid or expired.</AlertMessage>}
         {success ? (
-          <AlertMessage variant="success">Your password has been reset. Redirecting to sign in…</AlertMessage>
+          <div className="flex flex-col gap-4">
+            <AlertMessage variant="success">Your password has been reset. Redirecting to sign in…</AlertMessage>
+            <div className="rounded-2xl border border-border/70 bg-surface-muted/50 px-4 py-3 text-sm text-muted">
+              You can now sign in with your new password.
+            </div>
+          </div>
         ) : (
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)} noValidate>
             {formError && <AlertMessage variant="error">{formError}</AlertMessage>}
             <PasswordInput
               label="New password"

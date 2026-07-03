@@ -46,8 +46,6 @@ export function RegisterForm() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({ resolver: zodResolver(registerSchema) });
 
-  // The API does not auto-authenticate on registration, so the account is
-  // created and the user is sent to sign in explicitly.
   const loginHref =
     next === appConfig.routes.account ? appConfig.routes.login : buildLoginRedirect(next);
 
@@ -106,20 +104,14 @@ export function RegisterForm() {
   };
 
   return (
-    <AuthShell>
-      <AuthCard
-        title="Create your account"
-        subtitle="Join the World Pet Association"
-        footer={<FormFooterLink prompt="Already have an account?" label="Sign in" href={loginHref} />}
-      >
+    <AuthShell maxWidth="max-w-[460px]">
+      <AuthCard title="Create account" subtitle="Set up your WPA account." footer={<FormFooterLink prompt="Already have an account?" label="Sign in" href={loginHref} />}>
         {clientName && <RedirectNotice appName={clientName} />}
 
         {submitted ? (
-          <AlertMessage variant="success">
-            Account created. Redirecting you to sign in…
-          </AlertMessage>
+          <AlertMessage variant="success">Account created. Redirecting you to sign in…</AlertMessage>
         ) : (
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)} noValidate>
             {formError && <AlertMessage variant="error">{formError}</AlertMessage>}
             <FormInput
               label="Full name"
@@ -156,12 +148,7 @@ export function RegisterForm() {
           </form>
         )}
 
-        <SocialLoginSection
-          loading={socialLoading}
-          error={socialError}
-          providers={socialProviders}
-          buildHref={buildSocialHref}
-        />
+        <SocialLoginSection loading={socialLoading} error={socialError} providers={socialProviders} buildHref={buildSocialHref} label="Or continue with" />
       </AuthCard>
     </AuthShell>
   );

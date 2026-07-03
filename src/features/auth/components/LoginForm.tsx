@@ -102,15 +102,11 @@ export function LoginForm() {
   }, [socialContext]);
 
   return (
-    <AuthShell>
-      <AuthCard
-        title="Sign in"
-        subtitle="Use your WPA account to continue"
-        footer={<FormFooterLink prompt="Don't have an account?" label="Create one" href={registerHref} />}
-      >
+    <AuthShell maxWidth="max-w-[440px]">
+      <AuthCard title="Sign in" subtitle="Use your WPA account to continue." footer={<FormFooterLink prompt="Don't have an account?" label="Create one" href={registerHref} />}>
         {clientName && <RedirectNotice appName={clientName} />}
 
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)} noValidate>
           {formError && <AlertMessage variant="error">{formError}</AlertMessage>}
           <FormInput
             label="Email or phone number"
@@ -128,46 +124,16 @@ export function LoginForm() {
               error={errors.password?.message}
               {...register("password")}
             />
-            <Link
-              href={appConfig.routes.forgotPassword}
-              className="self-end text-xs font-medium text-brand hover:underline"
-            >
+            <Link href={appConfig.routes.forgotPassword} className="self-end text-xs font-medium text-brand hover:underline">
               Forgot password?
             </Link>
           </div>
           <PrimaryButton type="submit" isLoading={isSubmitting}>
-            Continue
+            Sign in
           </PrimaryButton>
         </form>
 
-        <SocialLoginSection
-          loading={socialLoading}
-          error={socialError}
-          providers={socialProviders}
-          buildHref={buildSocialHref}
-        />
-
-        {!socialLoading && !socialError && socialProviders.main.length === 0 && socialProviders.more.length === 0 && (
-          <>
-            <div className="my-5 flex items-center gap-3" aria-hidden>
-              <span className="h-px flex-1 bg-border" />
-              <span className="text-xs font-medium text-muted-subtle">OR</span>
-              <span className="h-px flex-1 bg-border" />
-            </div>
-
-            <button
-              type="button"
-              disabled
-              title="One-time code sign-in is coming soon"
-              className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-dashed border-border px-4 py-2.5 text-sm font-medium text-muted-subtle"
-            >
-              Sign in with a one-time code
-              <span className="rounded-full bg-surface-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted">
-                Coming soon
-              </span>
-            </button>
-          </>
-        )}
+        <SocialLoginSection loading={socialLoading} error={socialError} providers={socialProviders} buildHref={buildSocialHref} label="Or sign in with" />
       </AuthCard>
     </AuthShell>
   );

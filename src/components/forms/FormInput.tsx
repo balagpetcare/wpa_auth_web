@@ -16,7 +16,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
 
     return (
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={inputId} className="text-sm font-medium text-foreground">
+        <label htmlFor={inputId} className="text-sm font-medium tracking-tight text-foreground">
           {label}
         </label>
         <input
@@ -24,7 +24,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
           id={inputId}
           aria-invalid={Boolean(error)}
           aria-describedby={errorId ?? hintId}
-          className={`w-full rounded-lg border bg-surface px-3.5 py-2.5 text-sm text-foreground outline-none transition-shadow placeholder:text-muted-subtle focus:border-brand focus:shadow-[0_0_0_3px_var(--focus-ring)] ${
+          className={`w-full rounded-2xl border bg-surface px-4 py-3 text-sm text-foreground outline-none transition-shadow placeholder:text-muted-subtle focus:border-brand focus:shadow-[0_0_0_3px_var(--focus-ring)] ${
             error ? "border-danger" : "border-border"
           } ${className}`}
           {...rest}

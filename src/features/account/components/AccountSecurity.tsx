@@ -3,12 +3,16 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { AuthLogo } from "@/components/branding/AuthLogo";
 import { Button } from "@/components/ui/Button";
-import { ComingSoonNote } from "@/components/layout/ComingSoonNote";
-import { AccountShell } from "@/components/layout/AccountShell";
-import { SectionCard } from "@/components/layout/SectionCard";
 import { appConfig } from "@/config/app";
 import { useAuth } from "@/features/auth/context";
+import { StatusBadge } from "./accountUi";
+
+function formatDate(value: string | null | undefined) {
+  if (!value) return null;
+  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(value));
+}
 
 export function AccountSecurity() {
   const router = useRouter();
@@ -34,90 +38,89 @@ export function AccountSecurity() {
   }
 
   return (
-    <AccountShell activeTab="security">
-      {/* Real: POST /auth/forgot-password + /auth/reset-password already exist and are wired up. */}
-      <SectionCard title="Password" description="Change your password via a secure email link.">
-        <Link href={appConfig.routes.forgotPassword} className="text-sm font-medium text-brand hover:underline">
-          Send password reset link
-        </Link>
-      </SectionCard>
+    <div className="min-h-screen bg-[#f7f5f1]">
+      <div className="mx-auto flex min-h-screen w-full max-w-[760px] flex-col px-4 py-6 sm:px-6 sm:py-8">
+        <header className="rounded-[28px] border border-border/70 bg-surface px-5 py-5 shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:px-6">
+          <div className="flex flex-col gap-5">
+            <div className="flex items-center justify-between gap-4">
+              <AuthLogo className="shrink-0" />
+              <div className="hidden rounded-full border border-border/70 bg-surface-muted px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-subtle sm:inline-flex">
+                WPA / World Pet Association
+              </div>
+            </div>
 
-      {/* Real: POST /auth/verify-email/request + /confirm already exist and are wired up. */}
-      <SectionCard title="Email verification" description="Confirm ownership of your email address.">
-        {user.emailVerifiedAt ? (
-          <p className="text-sm text-foreground">Your email is verified.</p>
-        ) : (
-          <Link href={appConfig.routes.verifyOtp} className="text-sm font-medium text-brand hover:underline">
-            Verify your email
-          </Link>
-        )}
-      </SectionCard>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-subtle">Security</p>
+              <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">Protect your account</h1>
+              <p className="mt-2 max-w-2xl text-sm text-muted">
+                Keep only the essential recovery and session controls here.
+              </p>
+            </div>
 
-      {/*
-        TODO(api): no TOTP/SMS 2FA enrollment or challenge endpoints exist
-        on the API yet. Build this once endpoints such as
-        POST /auth/mfa/enroll, POST /auth/mfa/verify, POST /auth/mfa/disable
-        (naming TBD by backend) are available.
-      */}
-      <SectionCard title="Two-factor authentication" description="Add an extra layer of protection to your account.">
-        <ComingSoonNote>
-          Two-factor authentication isn&apos;t available yet. This section will let you enroll a
-          one-time-code app or SMS backup once it ships.
-        </ComingSoonNote>
-      </SectionCard>
+            <div className="flex flex-wrap gap-2">
+              <StatusBadge tone={user.emailVerifiedAt ? "success" : "warning"}>
+                Email {user.emailVerifiedAt ? "verified" : "not verified"}
+              </StatusBadge>
+            </div>
+          </div>
+        </header>
 
-      {/*
-        TODO(api): no endpoint exists to list/revoke individual refresh-token
-        sessions (e.g. GET /auth/sessions, DELETE /auth/sessions/:id). The
-        only session control available today is signing out of *this*
-        device via POST /auth/logout, exposed below as a real action.
-      */}
-      <SectionCard title="Active sessions" description="Devices and browsers currently signed in.">
-        <div className="flex flex-col gap-3">
-          <ComingSoonNote>
-            A list of your active sessions across devices isn&apos;t available yet.
-          </ComingSoonNote>
-          <div className="flex items-center justify-between rounded-lg border border-border bg-surface-muted px-3.5 py-3">
-            <span className="text-sm text-foreground">This device</span>
-            <Button variant="secondary" className="w-auto px-3 py-1.5 text-xs" onClick={handleLogout}>
-              Sign out
+        <main className="mt-6 space-y-4">
+          <section className="rounded-[28px] border border-border/80 bg-surface/96 p-5 shadow-[0_18px_45px_rgba(15,23,42,0.08)] sm:p-6">
+            <h2 className="text-lg font-semibold tracking-tight text-foreground">Password</h2>
+            <p className="mt-1 text-sm text-muted">Send a secure reset link to your email address.</p>
+            <div className="mt-4">
+              <Link
+                href={appConfig.routes.forgotPassword}
+                className="inline-flex items-center justify-center rounded-full bg-brand px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-hover"
+              >
+                Send reset link
+              </Link>
+            </div>
+          </section>
+
+          <section className="rounded-[28px] border border-border/80 bg-surface/96 p-5 shadow-[0_18px_45px_rgba(15,23,42,0.08)] sm:p-6">
+            <h2 className="text-lg font-semibold tracking-tight text-foreground">Email verification</h2>
+            <p className="mt-1 text-sm text-muted">
+              {user.emailVerifiedAt
+                ? `Verified on ${formatDate(user.emailVerifiedAt)}.`
+                : "Verify your email to keep recovery working."}
+            </p>
+            <div className="mt-4">
+              {user.emailVerifiedAt ? (
+                <StatusBadge tone="success">Verified</StatusBadge>
+              ) : (
+                <Link
+                  href={appConfig.routes.verifyOtp}
+                  className="inline-flex items-center justify-center rounded-full border border-border bg-surface px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-surface-muted"
+                >
+                  Verify now
+                </Link>
+              )}
+            </div>
+          </section>
+
+          <section className="rounded-[28px] border border-border/80 bg-surface/96 p-5 shadow-[0_18px_45px_rgba(15,23,42,0.08)] sm:p-6">
+            <h2 className="text-lg font-semibold tracking-tight text-foreground">Current session</h2>
+            <p className="mt-1 text-sm text-muted">Sign out this device if needed.</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button variant="secondary" className="w-auto rounded-full px-4" onClick={handleLogout}>
+                Sign out this device
+              </Button>
+            </div>
+          </section>
+
+          <div className="pt-2">
+            <Button
+              variant="ghost"
+              className="w-auto px-0 text-sm"
+              onClick={() => router.push(appConfig.routes.account)}
+            >
+              Back to account
             </Button>
           </div>
-        </div>
-      </SectionCard>
-
-      {/*
-        TODO(api): no endpoint exists yet to list or remove trusted/remembered
-        devices. Build this once a device-trust endpoint is available.
-      */}
-      <SectionCard title="Trusted devices" description="Devices you've marked as trusted for faster sign-in.">
-        <ComingSoonNote>
-          Trusted device management isn&apos;t available yet.
-        </ComingSoonNote>
-      </SectionCard>
-
-      {/*
-        TODO(api): GET /auth/me exposes `lastLoginAt` only. A full login
-        history endpoint (timestamp, IP, device, location, outcome) does not
-        exist yet — build this section once one is available.
-      */}
-      <SectionCard title="Login history" description="A record of recent sign-ins to your account.">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between py-1">
-            <span className="text-sm text-muted">Last sign-in</span>
-            <span className="text-sm font-medium text-foreground">
-              {user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleString() : "—"}
-            </span>
-          </div>
-          <ComingSoonNote>A full login history isn&apos;t available yet.</ComingSoonNote>
-        </div>
-      </SectionCard>
-
-      <SectionCard title="Back to account" description="Return to your account overview.">
-        <Link href={appConfig.routes.account} className="text-sm font-medium text-brand hover:underline">
-          Go to account
-        </Link>
-      </SectionCard>
-    </AccountShell>
+        </main>
+      </div>
+    </div>
   );
 }

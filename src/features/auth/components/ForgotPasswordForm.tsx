@@ -35,10 +35,10 @@ export function ForgotPasswordForm() {
   };
 
   return (
-    <AuthShell>
+    <AuthShell maxWidth="max-w-[440px]">
       <AuthCard
         title="Reset your password"
-        subtitle="Enter your email and we'll send you a reset link"
+        subtitle="We'll send a secure recovery link to the email on file."
         footer={
           <Link href={appConfig.routes.login} className="font-medium text-brand hover:underline">
             Back to sign in
@@ -46,11 +46,16 @@ export function ForgotPasswordForm() {
         }
       >
         {submitted ? (
-          <AlertMessage variant="success">
-            If an account exists for that email, a password reset link is on its way.
-          </AlertMessage>
+          <div className="flex flex-col gap-4">
+            <AlertMessage variant="success">
+              If an account exists for that email, a password reset link is on its way.
+            </AlertMessage>
+            <div className="rounded-2xl border border-border/70 bg-surface-muted/50 px-4 py-3 text-sm text-muted">
+              Check your inbox and spam folder. The link expires after a short period for security.
+            </div>
+          </div>
         ) : (
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)} noValidate>
             {formError && <AlertMessage variant="error">{formError}</AlertMessage>}
             <FormInput
               label="Email"

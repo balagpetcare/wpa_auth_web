@@ -19,17 +19,14 @@ export function VerifyOtpForm() {
   const token = searchParams.get("token");
   const { user, isAuthenticated, isLoading, refreshUser } = useAuth();
 
-  const [confirmState, setConfirmState] = useState<ConfirmState>("idle");
+  const [confirmState, setConfirmState] = useState<ConfirmState>(token ? "confirming" : "idle");
   const [confirmError, setConfirmError] = useState<string | null>(null);
-
   const [isResending, setIsResending] = useState(false);
   const [resendMessage, setResendMessage] = useState<string | null>(null);
   const [resendError, setResendError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!token) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- kicks off an async confirmation; not a synchronous render loop
-    setConfirmState("confirming");
     verifyOtp({ token })
       .then(async () => {
         setConfirmState("success");
@@ -59,17 +56,15 @@ export function VerifyOtpForm() {
 
   if (token) {
     return (
-      <AuthShell>
-        <AuthCard title="Verify your email">
-          {confirmState === "confirming" && (
-            <AlertMessage variant="loading">Verifying your email…</AlertMessage>
-          )}
+      <AuthShell maxWidth="max-w-[460px]">
+        <AuthCard title="Verify your email" subtitle="Confirm your address to unlock recovery and security notifications.">
+          {confirmState === "confirming" && <AlertMessage variant="loading">Verifying your email…</AlertMessage>}
           {confirmState === "success" && (
             <div className="flex flex-col gap-4">
               <AlertMessage variant="success">Your email has been verified.</AlertMessage>
               <Link
                 href={appConfig.routes.account}
-                className="inline-flex w-full items-center justify-center rounded-lg bg-brand px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-hover"
+                className="inline-flex w-full items-center justify-center rounded-2xl bg-brand px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-brand-hover"
               >
                 Continue
               </Link>
@@ -82,8 +77,8 @@ export function VerifyOtpForm() {
   }
 
   return (
-    <AuthShell>
-      <AuthCard title="Verify your email" subtitle="We'll send a one-time verification link to your inbox">
+    <AuthShell maxWidth="max-w-[460px]">
+      <AuthCard title="Verify your email" subtitle="We'll send a one-time verification link to your inbox.">
         <div className="flex flex-col gap-4">
           {resendMessage && <AlertMessage variant="success">{resendMessage}</AlertMessage>}
           {resendError && <AlertMessage variant="error">{resendError}</AlertMessage>}
@@ -105,8 +100,7 @@ export function VerifyOtpForm() {
             )
           ) : (
             <AlertMessage variant="info">
-              Sign in to request a new verification link, or check your inbox for the link we already
-              sent.
+              Sign in to request a new verification link, or check your inbox for the link we already sent.
             </AlertMessage>
           )}
         </div>

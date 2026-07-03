@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { CompleteSocialEmailForm } from "@/features/auth/components/CompleteSocialEmailForm";
+import { CompleteSocialEmailForm } from "@/features/auth/components";
 
 export const metadata: Metadata = { title: "Complete your account" };
 

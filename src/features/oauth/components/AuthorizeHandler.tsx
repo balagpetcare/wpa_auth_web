@@ -3,27 +3,20 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
-import { AuthCard } from "@/components/auth/AuthCard";
 import { AlertMessage } from "@/components/ui/AlertMessage";
 import { appConfig } from "@/config/app";
 import { useAuth } from "@/features/auth/context";
 import { buildRedirectUrl, getAuthorizeContext, isConsentRequired } from "@/features/oauth/oauthService";
-import { getErrorMessage } from "@/lib/errors";
 import { buildLoginRedirect, isValidHttpUrl, preserveOAuthParams } from "@/lib/redirect";
+import { OAuthLoadingIndicator, OAuthStatusCard } from "@/components/oauth/oauthUi";
 
 export function AuthorizeHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isAuthenticated, isLoading } = useAuth();
-  const [error, setError] = useState<string | null>(null);
   const hasRequested = useRef(false);
+  const [redirectError, setRedirectError] = useState<string | null>(null);
 
-  // Filtered to the known OAuth/OIDC authorize params (see
-  // preserveOAuthParams) and forwarded to the API and, for unauthenticated
-  // users, back to this page after login — this is what preserves
-  // client_id, redirect_uri, scope, state, response_type, code_challenge,
-  // code_challenge_method and nonce across the whole flow, while dropping
-  // anything unexpected rather than forwarding it blindly.
   const query = preserveOAuthParams(searchParams);
   const redirectUriParam = searchParams.get("redirect_uri");
 
@@ -36,11 +29,7 @@ export function AuthorizeHandler() {
       return;
     }
 
-    if (!isValidHttpUrl(redirectUriParam)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- synchronous validation failure, not a render loop
-      setError("This sign-in request is missing a valid redirect_uri.");
-      return;
-    }
+    if (!isValidHttpUrl(redirectUriParam)) return;
 
     if (hasRequested.current) return;
     hasRequested.current = true;
@@ -48,9 +37,6 @@ export function AuthorizeHandler() {
     getAuthorizeContext(query)
       .then((ctx) => {
         if (isConsentRequired(ctx)) {
-          // ctx.redirectUri and ctx.client come from the API, which has
-          // already validated redirect_uri against this client's registered
-          // values — safe to carry forward and display as-is.
           const consentParams = new URLSearchParams({
             ticket: ctx.consentTicket,
             client: ctx.client.name,
@@ -67,23 +53,30 @@ export function AuthorizeHandler() {
             state: ctx.state,
           });
         } catch {
-          setError("Could not complete the redirect back to the requesting app.");
+          setRedirectError("Could not complete the redirect back to the requesting app.");
         }
       })
-      .catch((err) => {
-        setError(getErrorMessage(err, "Authorization failed."));
-      });
+      .catch(() => {});
   }, [isAuthenticated, isLoading, query, redirectUriParam, router]);
 
+  const error = !isLoading && isAuthenticated && !isValidHttpUrl(redirectUriParam)
+    ? "This sign-in request is missing a valid redirect_uri."
+    : redirectError;
+
   return (
-    <AuthShell>
-      <AuthCard title="Authorize" subtitle="Confirming your session">
+    <AuthShell maxWidth="max-w-[540px]">
+      <OAuthStatusCard
+        title="Preparing secure authorization"
+        description="We are validating your session and the requesting application."
+      >
         {error ? (
           <AlertMessage variant="error">{error}</AlertMessage>
         ) : (
-          <AlertMessage variant="loading">Redirecting…</AlertMessage>
+          <div className="rounded-[24px] border border-border/80 bg-surface-muted/55 p-5">
+            <OAuthLoadingIndicator />
+          </div>
         )}
-      </AuthCard>
+      </OAuthStatusCard>
     </AuthShell>
   );
 }

@@ -1,11 +1,11 @@
 type AlertVariant = "error" | "success" | "info" | "warning" | "loading";
 
 const variantClasses: Record<AlertVariant, string> = {
-  error: "bg-danger-bg text-danger border-danger/20",
-  success: "bg-success-bg text-success border-success/20",
-  info: "bg-brand-soft text-brand border-brand/20",
-  warning: "bg-warning-bg text-warning border-warning/20",
-  loading: "bg-brand-soft text-brand border-brand/20",
+  error: "bg-rose-500/10 text-rose-700 border-rose-500/20 dark:text-rose-300",
+  success: "bg-emerald-500/10 text-emerald-700 border-emerald-500/20 dark:text-emerald-300",
+  info: "bg-brand/10 text-brand border-brand/20",
+  warning: "bg-amber-500/10 text-amber-700 border-amber-500/20 dark:text-amber-300",
+  loading: "bg-brand/10 text-brand border-brand/20",
 };
 
 function VariantIcon({ variant }: { variant: AlertVariant }) {
@@ -54,7 +54,7 @@ export function AlertMessage({
   return (
     <div
       role={variant === "error" ? "alert" : "status"}
-      className={`flex items-start gap-2 rounded-lg border px-3.5 py-2.5 text-sm ${variantClasses[variant]}`}
+      className={`flex items-start gap-2.5 rounded-2xl border px-4 py-3 text-sm shadow-[0_8px_20px_rgba(15,23,42,0.04)] ${variantClasses[variant]}`}
     >
       <VariantIcon variant={variant} />
       <span>{children}</span>

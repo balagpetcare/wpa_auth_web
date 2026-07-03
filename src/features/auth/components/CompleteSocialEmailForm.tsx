@@ -52,11 +52,8 @@ export function CompleteSocialEmailForm() {
   };
 
   return (
-    <AuthShell>
-      <AuthCard title="Complete your WPA account" subtitle="This provider did not share your email address. Add an email to continue securely.">
-        <div className="mb-4 rounded-xl border border-border bg-surface-muted px-4 py-3 text-sm text-muted">
-          This provider did not share your email address. Add an email to continue securely.
-        </div>
+    <AuthShell maxWidth="max-w-[460px]">
+      <AuthCard title="Complete account" subtitle="Add an email to continue securely.">
         {error && <AlertMessage variant="error">{error}</AlertMessage>}
         {success && <AlertMessage variant="success">{success}</AlertMessage>}
         <div className="flex flex-col gap-4">

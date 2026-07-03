@@ -17,11 +17,11 @@ const ENVIRONMENT_DEFAULTS: Record<
   { authWebUrl: string; apiBaseUrl: string; defaultRedirectUrl: string }
 > = {
   local: {
-    authWebUrl: "http://localhost:3002",
+    authWebUrl: "http://localhost:5011",
     // wpa_auth_api's default local PORT is 5010 (see its .env/.env.example) —
     // keep this in sync with that repo's actual default.
     apiBaseUrl: "http://localhost:5010/api/v1",
-    defaultRedirectUrl: "http://localhost:3002/account",
+    defaultRedirectUrl: "http://localhost:5011/account",
   },
   staging: {
     authWebUrl: "https://auth.staging.worldpetassociation.com",

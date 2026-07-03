@@ -1,4 +1,3 @@
-import { BrandHeader } from "@/components/branding/BrandHeader";
 import { SupportFooter } from "@/components/branding/SupportFooter";
 
 function ShieldIcon() {
@@ -21,15 +20,11 @@ export function AuthShell({
   maxWidth?: string;
 }) {
   return (
-    <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background px-4 py-10 sm:py-14">
+    <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#f7f5f1] px-4 py-10 sm:py-14">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-gradient-to-b from-background-accent to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[320px] bg-gradient-to-b from-brand/8 to-transparent"
       />
-
-      <div className="relative z-10 mb-8">
-        <BrandHeader showTagline />
-      </div>
 
       <div className={`relative z-10 w-full ${maxWidth}`}>{children}</div>
 

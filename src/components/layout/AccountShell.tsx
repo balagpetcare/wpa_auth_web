@@ -28,7 +28,7 @@ export function AccountShell({
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col gap-8 px-4 py-10 sm:py-12">
       <div className="flex items-center justify-between">
-        <BrandHeader variant="compact" href={appConfig.routes.account} />
+        <BrandHeader href={appConfig.routes.account} />
         {actions}
       </div>
 

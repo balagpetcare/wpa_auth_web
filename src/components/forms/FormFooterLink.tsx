@@ -10,8 +10,8 @@ export function FormFooterLink({
   href: string;
 }) {
   return (
-    <span>
-      {prompt}{" "}
+    <span className="inline-flex items-center gap-1.5">
+      <span>{prompt}</span>
       <Link href={href} className="font-medium text-brand hover:underline">
         {label}
       </Link>

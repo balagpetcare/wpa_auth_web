@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import type { SocialLoginProvider } from "@/features/social-login/types";
 import { SocialLoginButton } from "./SocialLoginButton";
 
@@ -11,26 +10,20 @@ export function MoreLoginOptions({
   providers: SocialLoginProvider[];
   buildHref: (provider: SocialLoginProvider) => string;
 }) {
-  const [open, setOpen] = useState(false);
   if (!providers.length) return null;
 
   return (
-    <div className="mt-3">
-      <button
-        type="button"
-        onClick={() => setOpen((value) => !value)}
-        className="flex w-full items-center justify-between rounded-lg border border-border bg-surface px-4 py-3 text-sm font-medium text-foreground"
-      >
-        <span>More login options</span>
-        <span className={`transition-transform ${open ? "rotate-180" : ""}`}>⌄</span>
-      </button>
-      {open && (
-        <div className="mt-3 flex flex-col gap-2">
-          {providers.map((provider) => (
-            <SocialLoginButton key={provider.provider} provider={provider} href={buildHref(provider)} />
-          ))}
-        </div>
-      )}
+    <div className="mt-4">
+      <div className="mb-3 flex items-center gap-3">
+        <div className="h-px flex-1 bg-border/70" />
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Sign in with more options</p>
+        <div className="h-px flex-1 bg-border/70" />
+      </div>
+      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+        {providers.map((provider) => (
+          <SocialLoginButton key={provider.provider} provider={provider} href={buildHref(provider)} />
+        ))}
+      </div>
     </div>
   );
 }
