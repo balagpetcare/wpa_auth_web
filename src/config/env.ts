@@ -9,7 +9,7 @@ function resolveAppEnvironment(): AppEnvironment {
 /**
  * Per-environment URL defaults, used only when the corresponding
  * `NEXT_PUBLIC_*` variable isn't explicitly set. Explicit env vars always
- * win — these exist so a misconfigured `NEXT_PUBLIC_APP_ENV=production`
+ * win - these exist so a misconfigured `NEXT_PUBLIC_APP_ENV=production`
  * deploy still points at real WPA domains instead of localhost.
  */
 const ENVIRONMENT_DEFAULTS: Record<
@@ -18,7 +18,7 @@ const ENVIRONMENT_DEFAULTS: Record<
 > = {
   local: {
     authWebUrl: "http://localhost:5011",
-    // wpa_auth_api's default local PORT is 5010 (see its .env/.env.example) —
+    // wpa_auth_api's default local PORT is 5010 (see its .env/.env.example) -
     // keep this in sync with that repo's actual default.
     apiBaseUrl: "http://localhost:5010/api/v1",
     defaultRedirectUrl: "http://localhost:5011/account",
@@ -50,16 +50,25 @@ export const env = {
   appEnv,
   apiBaseUrl: readEnv("NEXT_PUBLIC_API_BASE_URL", defaults.apiBaseUrl),
   authWebUrl: readEnv("NEXT_PUBLIC_AUTH_WEB_URL", defaults.authWebUrl),
+  publicWebsiteUrl: readEnv("NEXT_PUBLIC_PUBLIC_WEBSITE_URL", defaults.authWebUrl),
   defaultRedirectUrl: readEnv("NEXT_PUBLIC_DEFAULT_REDIRECT_URL", defaults.defaultRedirectUrl),
   appName: readEnv("NEXT_PUBLIC_APP_NAME", "WPA Account"),
   brandName: readEnv("NEXT_PUBLIC_BRAND_NAME", "World Pet Association"),
+  legalEntityName: readEnv("NEXT_PUBLIC_LEGAL_ENTITY_NAME", "World Pet Association"),
   tagline: readEnv("NEXT_PUBLIC_APP_TAGLINE", "One account for all WPA pet platforms."),
   supportEmail: readEnv("NEXT_PUBLIC_SUPPORT_EMAIL", "support@worldpetassociation.com"),
+  privacyEmail: readEnv("NEXT_PUBLIC_PRIVACY_EMAIL", "privacy@worldpetassociation.com"),
+  securityEmail: readEnv("NEXT_PUBLIC_SECURITY_EMAIL", "security@worldpetassociation.com"),
 } as const;
 
 /** This app's own public origin, trailing slash stripped. */
 export function getAuthWebUrl(): string {
   return stripTrailingSlash(env.authWebUrl);
+}
+
+/** Public website origin used for public metadata and links. */
+export function getPublicWebsiteUrl(): string {
+  return stripTrailingSlash(env.publicWebsiteUrl);
 }
 
 /** WPA Auth API base URL (includes the `/api/v1` prefix), trailing slash stripped. */

@@ -1,17 +1,35 @@
-import { env, getApiBaseUrl, getAuthWebUrl, getDefaultRedirectUrl } from "@/config/env";
+import { env, getApiBaseUrl, getAuthWebUrl, getDefaultRedirectUrl, getPublicWebsiteUrl } from "@/config/env";
 
 export const appConfig = {
   name: env.appName,
   brandName: env.brandName,
+  legalEntityName: env.legalEntityName,
   tagline: env.tagline,
-  supportEmail: env.supportEmail,
+  emails: {
+    support: env.supportEmail,
+    privacy: env.privacyEmail,
+    security: env.securityEmail,
+  },
   environment: env.appEnv,
   urls: {
-    self: getAuthWebUrl(),
+    publicWebsite: getPublicWebsiteUrl(),
+    authWebsite: getAuthWebUrl(),
     apiBase: getApiBaseUrl(),
     defaultRedirect: getDefaultRedirectUrl(),
   },
   routes: {
+    home: "/",
+    about: "/about",
+    contact: "/contact",
+    support: "/support",
+    privacyPolicy: "/privacy-policy",
+    termsOfService: "/terms-of-service",
+    cookiePolicy: "/cookie-policy",
+    socialLoginInformation: "/social-login-information",
+    security: "/security",
+    accountDeletion: "/account-deletion",
+    dataDeletion: "/data-deletion",
+    dataDeletionStatus: "/data-deletion/status/[confirmationCode]",
     login: "/auth/login",
     register: "/auth/register",
     verifyOtp: "/auth/verify-otp",
