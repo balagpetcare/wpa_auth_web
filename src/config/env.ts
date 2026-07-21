@@ -24,19 +24,29 @@ const ENVIRONMENT_DEFAULTS: Record<
     defaultRedirectUrl: "http://localhost:5011/account",
   },
   staging: {
-    authWebUrl: "https://auth.staging.worldpetassociation.com",
-    apiBaseUrl: "https://api.staging.worldpetassociation.com/api/v1",
-    defaultRedirectUrl: "https://auth.staging.worldpetassociation.com/account",
+    authWebUrl: "https://auth.staging.worldpetsassociation.com",
+    apiBaseUrl: "https://auth.staging.worldpetsassociation.com/api/v1",
+    defaultRedirectUrl: "https://auth.staging.worldpetsassociation.com/account",
   },
   production: {
-    authWebUrl: "https://auth.worldpetassociation.com",
-    apiBaseUrl: "https://api.worldpetassociation.com/api/v1",
-    defaultRedirectUrl: "https://auth.worldpetassociation.com/account",
+    authWebUrl: "https://auth.worldpetsassociation.com",
+    apiBaseUrl: "https://auth.worldpetsassociation.com/api/v1",
+    defaultRedirectUrl: "https://auth.worldpetsassociation.com/account",
   },
 };
 
-function readEnv(name: string, fallback: string): string {
-  return process.env[name] ?? fallback;
+/**
+ * `value` must be a literal `process.env.NEXT_PUBLIC_*` expression at the
+ * call site (not a variable holding the key name). Next.js's build-time
+ * inlining for client bundles only recognizes static `process.env.FOO`
+ * member expressions — a dynamic `process.env[name]` lookup can never be
+ * replaced, so it silently evaluates to `undefined` in the browser and
+ * every call always fell through to `fallback` there, regardless of what
+ * was actually set in `.env.production.local`. This previously sent
+ * client-side requests to the fallback default, not the configured API URL.
+ */
+function readEnv(value: string | undefined, fallback: string): string {
+  return value ?? fallback;
 }
 
 function stripTrailingSlash(url: string): string {
@@ -48,17 +58,17 @@ const defaults = ENVIRONMENT_DEFAULTS[appEnv];
 
 export const env = {
   appEnv,
-  apiBaseUrl: readEnv("NEXT_PUBLIC_API_BASE_URL", defaults.apiBaseUrl),
-  authWebUrl: readEnv("NEXT_PUBLIC_AUTH_WEB_URL", defaults.authWebUrl),
-  publicWebsiteUrl: readEnv("NEXT_PUBLIC_PUBLIC_WEBSITE_URL", defaults.authWebUrl),
-  defaultRedirectUrl: readEnv("NEXT_PUBLIC_DEFAULT_REDIRECT_URL", defaults.defaultRedirectUrl),
-  appName: readEnv("NEXT_PUBLIC_APP_NAME", "WPA Account"),
-  brandName: readEnv("NEXT_PUBLIC_BRAND_NAME", "World Pet Association"),
-  legalEntityName: readEnv("NEXT_PUBLIC_LEGAL_ENTITY_NAME", "World Pet Association"),
-  tagline: readEnv("NEXT_PUBLIC_APP_TAGLINE", "One account for all WPA pet platforms."),
-  supportEmail: readEnv("NEXT_PUBLIC_SUPPORT_EMAIL", "support@worldpetassociation.com"),
-  privacyEmail: readEnv("NEXT_PUBLIC_PRIVACY_EMAIL", "privacy@worldpetassociation.com"),
-  securityEmail: readEnv("NEXT_PUBLIC_SECURITY_EMAIL", "security@worldpetassociation.com"),
+  apiBaseUrl: readEnv(process.env.NEXT_PUBLIC_API_BASE_URL, defaults.apiBaseUrl),
+  authWebUrl: readEnv(process.env.NEXT_PUBLIC_AUTH_WEB_URL, defaults.authWebUrl),
+  publicWebsiteUrl: readEnv(process.env.NEXT_PUBLIC_PUBLIC_WEBSITE_URL, defaults.authWebUrl),
+  defaultRedirectUrl: readEnv(process.env.NEXT_PUBLIC_DEFAULT_REDIRECT_URL, defaults.defaultRedirectUrl),
+  appName: readEnv(process.env.NEXT_PUBLIC_APP_NAME, "WPA Account"),
+  brandName: readEnv(process.env.NEXT_PUBLIC_BRAND_NAME, "World Pet Association"),
+  legalEntityName: readEnv(process.env.NEXT_PUBLIC_LEGAL_ENTITY_NAME, "World Pet Association"),
+  tagline: readEnv(process.env.NEXT_PUBLIC_APP_TAGLINE, "One account for all WPA pet platforms."),
+  supportEmail: readEnv(process.env.NEXT_PUBLIC_SUPPORT_EMAIL, "support@worldpetsassociation.com"),
+  privacyEmail: readEnv(process.env.NEXT_PUBLIC_PRIVACY_EMAIL, "privacy@worldpetsassociation.com"),
+  securityEmail: readEnv(process.env.NEXT_PUBLIC_SECURITY_EMAIL, "security@worldpetsassociation.com"),
 } as const;
 
 /** This app's own public origin, trailing slash stripped. */
